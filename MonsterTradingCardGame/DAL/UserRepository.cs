@@ -44,11 +44,12 @@ namespace MonsterTradingCardGame.DAL
         public void RegisterUser(string username, string password)
         {
             int role = checkIfEmpty();
+            
             IDbConnection connection = DataBaseConnectionService.connectToDataBase();
             IDbCommand command = connection.CreateCommand();
             command.CommandText = @"INSERT INTO USERS(username, password, coins, role, elo, wins, losses) values (@username,@password,@coins,@role,@elo,@wins,@losses)";
 
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("username", username);
             c.Parameters.AddWithValue("password", password);
             c.Parameters.AddWithValue("coins", 20);
@@ -61,6 +62,32 @@ namespace MonsterTradingCardGame.DAL
 
             DataBaseConnectionService.closeConnectionToDataBase(connection);
         }
+
+        public void DeleteUser(string username, string password)
+        {
+
+            IDbConnection connection = DataBaseConnectionService.connectToDataBase();
+            IDbCommand command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM USERS WHERE username = @username AND password = @password";
+
+            IDbDataParameter pUSERNAME = command.CreateParameter();
+            pUSERNAME.ParameterName = "username";
+            pUSERNAME.DbType = DbType.String;
+            pUSERNAME.Size = 20;
+            pUSERNAME.Value = username;
+            command.Parameters.Add(pUSERNAME);
+
+            IDbDataParameter pPASSWORD = command.CreateParameter();
+            pPASSWORD.ParameterName = "password";
+            pPASSWORD.DbType = DbType.String;
+            pPASSWORD.Size = 100;
+            pPASSWORD.Value = password;
+            command.Parameters.Add(pPASSWORD);
+
+            command.ExecuteNonQuery();
+            DataBaseConnectionService.closeConnectionToDataBase(connection);
+        }
+    
 
         public int checkIfEmpty()
         {
@@ -133,14 +160,14 @@ namespace MonsterTradingCardGame.DAL
         }
         public void UpdateUserInfo(string username, string content)
         {
-            UserInfo user = JsonSerializer.Deserialize<UserInfo>(content);
+            UserInfo user = JsonSerializer.Deserialize<UserInfo>(content)!;
             if(user == null)
             {
                 throw new ArgumentNullException();
             }
-            string name = user.Name;
-            string bio = user.Bio;
-            string image = user.Image;
+            string name = user.Name!;
+            string bio = user.Bio!;
+            string image = user.Image!;
             IDbConnection connection = DataBaseConnectionService.connectToDataBase();
             IDbCommand command = connection.CreateCommand();
             command.CommandText = "UPDATE USERS SET name = @name, bio = @bio, image = @image WHERE username = @username";
@@ -214,7 +241,7 @@ namespace MonsterTradingCardGame.DAL
             IDbCommand command = connection.CreateCommand();
             string username = "";
             command.CommandText = @"SELECT USERNAME FROM USERS WHERE token = @token";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("token", token);
             c.Prepare();
             var reader = command.ExecuteReader();

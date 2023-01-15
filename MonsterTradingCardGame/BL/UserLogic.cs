@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL
 {
-    internal class UserLogic
+    public class UserLogic
     {
         private UserRepository userRepository = new();
         private SessionLogic sessionLogic = new();
@@ -21,10 +21,30 @@ namespace MonsterTradingCardGame.BL
             }
             else
             {
+                if (username == "")
+                {
+                    throw new ArgumentNullException();
+                }
                 password = PasswordHasher.HashPassword(password);
                 userRepository.RegisterUser(username, password);
                 Console.WriteLine("User registered");
             }
+        }
+        
+        public void DeleteUser(string username, string password)
+        {
+            
+            if (userRepository.CheckIfUserExists(username))
+            {
+                password = PasswordHasher.HashPassword(password);
+                userRepository.DeleteUser(username, password);
+                Console.WriteLine("User deleted");
+            }
+            else
+            {
+                throw new NotFoundException("User not found");
+            }
+            
         }
 
         public bool CheckIfUserExists(string username)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL.Exceptions
 {
-    internal class NoItemAvaiableException : Exception
+    public class NoItemAvaiableException : Exception
     {
         public NoItemAvaiableException(string message) : base(message)
         {

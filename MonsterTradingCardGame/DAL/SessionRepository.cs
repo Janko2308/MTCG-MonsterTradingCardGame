@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.DAL
 {
-    internal class SessionRepository
+    public class SessionRepository
     {
         public bool CheckIfPasswordIsCorrect(string username, string password)
         {
@@ -103,6 +103,28 @@ namespace MonsterTradingCardGame.DAL
             token = token.ToLower();
             authorizationToken = authorizationToken.ToLower();
             return token == username + "-mtcgtoken" && token == authorizationToken;
+        }
+        public void RemoveSession(string token)
+        {
+            string[] parts = token.Split('-');
+            string firstPart = parts[0];
+            token = firstPart + "-mtcgtoken";
+
+            IDbConnection connection = DataBaseConnectionService.connectToDataBase();
+            IDbCommand command = connection.CreateCommand();
+            command.CommandText = "UPDATE USERS SET token = null WHERE token = @token";
+
+            IDbDataParameter pToken = command.CreateParameter();
+            pToken.ParameterName = "token";
+            pToken.DbType = DbType.String;
+            pToken.Size = 40;
+            pToken.Value = token;
+            command.Parameters.Add(pToken);
+
+            command.ExecuteNonQuery();
+
+            DataBaseConnectionService.closeConnectionToDataBase(connection);
+            
         }
     }
 }

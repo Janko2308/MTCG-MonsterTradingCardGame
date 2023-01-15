@@ -49,12 +49,11 @@ namespace MonsterTradingCardGame.BL
                     else
                     {
                         throw new NotUniqueCardException("At least one card already exists");
-                        //throw 409 At least one card already exists
                     }
                 }
                 else
                 {
-                    //throw not the right amount
+                    throw new NotRequiredAmountOfCardsException("Not enough cards");
                 }
 
  

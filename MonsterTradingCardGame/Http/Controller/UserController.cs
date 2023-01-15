@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
@@ -21,7 +22,14 @@ namespace MonsterTradingCardGame.Http.Controller
         {
             if(request.Method == "POST")
             {
-                Register(request, response);
+                if (request.Path == "/users/delete")
+                {
+                    Delete(request, response);
+                }
+                else
+                {
+                    Register(request, response);
+                }
             }
             else if(request.Method == "GET")
             {
@@ -37,10 +45,9 @@ namespace MonsterTradingCardGame.Http.Controller
         {
             try
             {
-                User user = JsonSerializer.Deserialize<User>(request.Content);
+                User user = JsonSerializer.Deserialize<User>(request.Content)!;
                 if (user == null)
-                {
-                    //TODO: Entsprechende Response schreiben 
+                { 
                     throw new ArgumentNullException("json", "json is null");
                 }
                 userLogic.RegisterUser(user.Username, user.Password);
@@ -50,6 +57,7 @@ namespace MonsterTradingCardGame.Http.Controller
             {
                 response = ResponseUtils.SetResponseData(response, 409, "Conflict", e.Message);
             }
+            
         }
         
         private void Get(HttpRequest request, HttpResponse response)
@@ -58,7 +66,6 @@ namespace MonsterTradingCardGame.Http.Controller
             {
                 string name = request.Path.Split("/").Last();
                 
-                //admin is allowed everything && name != "admin"
                 UserInfo user = userLogic.GetUser(name);
                 if (user.Name == null)
                 {
@@ -101,22 +108,45 @@ namespace MonsterTradingCardGame.Http.Controller
                     userLogic.UpdateUserInfo(name, request.Content);
                     ResponseUtils.SetResponseData(response, 200, "OK", "");
                 }
-                //TODO: if token missing or invalid
-                //TODO: user not found
                 
             }
-            catch (UserNotFoundException e)
+            catch (UserNotFoundException)
             {
                 ResponseUtils.SetResponseData(response, 404, "Not Found", "");
             }
-            catch(ArgumentNullException e)
+            catch(ArgumentNullException)
             {
                 ResponseUtils.SetResponseData(response, 404, "Not Found", "");
             }
-            catch (AuthenticateTokenException e)
+            catch (AuthenticateTokenException)
             {
                 ResponseUtils.SetResponseData(response, 401, "Access token is missing or invalid", "");
             }
+
+            
+        }
+        private void Delete(HttpRequest request, HttpResponse response)
+        {
+            try
+            {
+                User user = JsonSerializer.Deserialize<User>(request.Content)!;
+                if (user == null)
+                {
+                    throw new ArgumentNullException("json", "json is null");
+                }
+                userLogic.DeleteUser(user.Username, user.Password);
+                response = ResponseUtils.SetResponseData(response, 200, "Deleted", "");
+
+            }
+            catch (UserNotFoundException)
+            {
+                ResponseUtils.SetResponseData(response, 404, "Not Found", "");
+            }
+            catch (ArgumentNullException)
+            {
+                ResponseUtils.SetResponseData(response, 404, "Not Found", "");
+            }
+
         }
     }
 }

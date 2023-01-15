@@ -18,14 +18,13 @@ namespace MonsterTradingCardGame.DAL
             IDbConnection connection = DataBaseConnectionService.connectToDataBase();
             IDbCommand command = connection.CreateCommand();
             command.CommandText = "SELECT username,elo,wins,losses FROM USERS WHERE Username = @username";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("username", username);
             c.Prepare();
             var reader = command.ExecuteReader();
             if (reader.Read())
             {
                 stats = new(reader.GetString(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3));
-                return stats;
             }
             else
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL.Exceptions
 {
-    internal class NoSuchMethodException : Exception
+    public class NoSuchMethodException : Exception
     {
         public NoSuchMethodException(string message) : base(message)
         {

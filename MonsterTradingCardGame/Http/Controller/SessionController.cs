@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Security.Authentication;
+using MonsterTradingCardGame.BL.Exceptions;
 
 namespace MonsterTradingCardGame.Http.Controller
 {
@@ -16,11 +17,18 @@ namespace MonsterTradingCardGame.Http.Controller
         {
             if (request.Method == "POST")
             {
-                Login(request, response);
+                if(request.Path == "/sessions/logout")
+                {
+                    RemoveSession(request, response);
+                }
+                else
+                {
+                    Login(request, response);  
+                }
             }
             else
             {
-                //throw something
+                throw new NoSuchMethodException("No such method");
             }
         }
 
@@ -28,23 +36,29 @@ namespace MonsterTradingCardGame.Http.Controller
         {
             try
             {
-                User user = JsonSerializer.Deserialize<User>(request.Content);
+              
+                User user = JsonSerializer.Deserialize<User>(request.Content)!;
                 if (user == null)
                 {
-                    //TODO: Entsprechende Response schreiben 
                     throw new ArgumentNullException("json", "json is null");
                 }
                 string token = sessionLogic.Login(user.Username, user.Password);
-                response = ResponseUtils.SetResponseData(response, 200, "Login successfull", token);
+                ResponseUtils.SetResponseData(response, 200, "Login successfull", token);
             }
             catch (AuthenticationException e)
             {
-                response = ResponseUtils.SetResponseData(response, 401, "Invalid username/password provided", e.Message);
+                ResponseUtils.SetResponseData(response, 401, "Invalid username/password provided", e.Message);
             }
         }
         public bool CheckIfSession(string username, string authorizationToken)
         {
             return sessionLogic.CheckIfSession(username, authorizationToken);
+        }
+        
+        public void RemoveSession(HttpRequest request, HttpResponse response)
+        {
+            sessionLogic.RemoveSession(request, response);
+            ResponseUtils.SetResponseData(response, 200, "Logout successfull", "");
         }
     }
 }

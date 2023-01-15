@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL
 {
-    internal class TransactionsLogic
+    public class TransactionsLogic
     {
         private TransactionsRepository transactionsRepository = new();
         private UserLogic userlogic = new();

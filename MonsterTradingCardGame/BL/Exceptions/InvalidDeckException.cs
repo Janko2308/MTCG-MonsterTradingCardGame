@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL.Exceptions
 {
-    public class ConflictException : Exception
+    internal class InvalidDeckException : Exception
     {
-        public ConflictException(string message) : base(message)
+        public InvalidDeckException(string message) : base(message)
         {
         }
     }
+    
+    
 }

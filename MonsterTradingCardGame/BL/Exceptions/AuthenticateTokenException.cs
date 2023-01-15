@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL.Exceptions
 {
-    internal class AuthenticateTokenException : Exception
+    public class AuthenticateTokenException : Exception
     {
         public AuthenticateTokenException(string message) : base(message)
         {

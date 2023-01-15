@@ -21,7 +21,7 @@ namespace MonsterTradingCardGame.DAL
 
             command.CommandText = "SELECT id, name, type, element, damage FROM CARD WHERE owner = @owner AND deck = true";
 
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("owner", username);
             c.Prepare();
             var reader = command.ExecuteReader();
@@ -48,7 +48,7 @@ namespace MonsterTradingCardGame.DAL
             IDbCommand command = connection.CreateCommand();
 
             command.CommandText = "UPDATE CARD SET deck = false WHERE owner = @owner";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("owner", username);
             c.Prepare();
             command.ExecuteNonQuery();
@@ -56,7 +56,7 @@ namespace MonsterTradingCardGame.DAL
             foreach (string cardId in cardIds)
             {
                 command.CommandText = "UPDATE CARD SET deck = true WHERE id = @id";
-                NpgsqlCommand c2 = command as NpgsqlCommand;
+                NpgsqlCommand c2 = (command as NpgsqlCommand)!;
                 c2.Parameters.Clear();
                 c2.Parameters.AddWithValue("id", cardId);
                 c2.Prepare();
@@ -72,7 +72,7 @@ namespace MonsterTradingCardGame.DAL
             foreach (string cardId in cardIds)
             {
                 command.CommandText = "SELECT id FROM CARD WHERE owner = @owner";
-                NpgsqlCommand c = command as NpgsqlCommand;
+                NpgsqlCommand c = (command as NpgsqlCommand)!;
                 c.Parameters.AddWithValue("owner", username);
                 c.Prepare();
                 var reader = command.ExecuteReader();
@@ -94,7 +94,28 @@ namespace MonsterTradingCardGame.DAL
             {
                 return true;
             }
-            return false; ;
+            return false;
+        }
+        
+        public bool CheckIfDeckExists(string username)
+        {
+            
+            IDbConnection connection = DataBaseConnectionService.connectToDataBase();
+            IDbCommand command = connection.CreateCommand();
+            command.CommandText = "SELECT id FROM CARD WHERE owner = @owner AND deck = true";
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
+            c.Parameters.AddWithValue("owner", username);
+            c.Prepare();
+            int counter = 0;
+            var reader = command.ExecuteReader();
+            while(reader.Read())
+            {
+                counter++;
+            }
+            reader.Close();
+            DataBaseConnectionService.closeConnectionToDataBase(connection);
+            return counter == 4;
+            
         }
 
     }

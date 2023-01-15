@@ -13,6 +13,7 @@ namespace MonsterTradingCardGame.BL
         private DAL.BattleRepository battleRepository = new();
         private UserLogic userLogic = new();
         private SessionLogic session = new();
+        private DeckLogic deckLogic = new();
 
         private static Mutex mutex = new Mutex();
         private static List<BattleUtils> battles = new();
@@ -26,6 +27,10 @@ namespace MonsterTradingCardGame.BL
             if (!session.CheckIfSession(userName, authHeader))
             {
                 throw new AuthenticateTokenException("Access token is missing or invalid");
+            }
+            if (!deckLogic.CheckIfDeckExists(userName))
+            {
+                throw new InvalidDeckException("Deck is not valid");
             }
             mutex.WaitOne();
           

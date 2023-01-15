@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCardGame.DAL;
+using MonsterTradingCardGame.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,31 +9,36 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL
 {
-    internal class SessionLogic
+    public class SessionLogic
     {
         private SessionRepository sessionRepository = new();
-        //private UserLogic userLogic = new();
         public string Login(string username, string password)
         {
             password = PasswordHasher.HashPassword(password);
             if (sessionRepository.CheckIfPasswordIsCorrect(username, password))
             {
-                Console.WriteLine("User logged in" + "########");
                 return sessionRepository.CreateSession(username);
             }
             else
             {
-                Console.WriteLine("False Password" + "########");
                 throw new AuthenticationException("Wrong Credentials");
-                //throw new UnauthorizedException("Password is incorrect");
             }
         }
-
-        //throw new NotFoundException("User does not exist");
 
         public bool CheckIfSession(string Username, string AuthorizationToken)
         {
             return sessionRepository.CheckIfSession(Username, AuthorizationToken);
+        }
+
+        public string CreateSession(string username)
+        {
+            return sessionRepository.CreateSession(username);
+        }
+
+        public void RemoveSession(HttpRequest request, HttpResponse response)
+        {
+            string token = AuthenticationToken.ReturnAuthenticationToken(request);
+            sessionRepository.RemoveSession(token);
         }
     }
 }

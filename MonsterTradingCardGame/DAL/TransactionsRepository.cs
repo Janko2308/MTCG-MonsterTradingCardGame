@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.DAL
 {
-    internal class TransactionsRepository
+    public class TransactionsRepository
     {
         public void BuyPackage(string token)
         {
@@ -43,7 +43,7 @@ namespace MonsterTradingCardGame.DAL
             IDbCommand command2 = connection.CreateCommand();
             command2.CommandText = "SELECT cardid1, cardid2, cardid3, cardid4, cardid5 FROM PACKAGES WHERE ID = @id";
 
-            NpgsqlCommand c = command2 as NpgsqlCommand;
+            NpgsqlCommand c = (command2 as NpgsqlCommand)!;
             c.Parameters.AddWithValue("id", id);
             c.Prepare();
             var reader2 = command2.ExecuteReader();
@@ -78,7 +78,7 @@ namespace MonsterTradingCardGame.DAL
             IDbCommand command = connection.CreateCommand();
 
             command.CommandText = @"SELECT COINS FROM USERS WHERE token = @token";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("token", token);
             c.Prepare();
             var reader = command.ExecuteReader();
@@ -97,7 +97,7 @@ namespace MonsterTradingCardGame.DAL
             if (hasMoney)
             {
                 command.CommandText = @"UPDATE USERS SET coins = coins - 5 WHERE token = @token";
-                c = command as NpgsqlCommand;
+                c = (command as NpgsqlCommand)!;
                 c.Parameters.AddWithValue("token", token);
                 c.Prepare();
                 command.ExecuteNonQuery();
@@ -112,7 +112,7 @@ namespace MonsterTradingCardGame.DAL
             IDbConnection connection = DataBaseConnectionService.connectToDataBase();
             IDbCommand command = connection.CreateCommand();
             command.CommandText = @"UPDATE CARD SET owner = @owner WHERE id = @id";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("owner", username);
             c.Parameters.AddWithValue("id", cardid);
             c.Prepare();
@@ -128,7 +128,7 @@ namespace MonsterTradingCardGame.DAL
             IDbCommand command = connection.CreateCommand();
             string username = "";
             command.CommandText = @"SELECT USERNAME FROM USERS WHERE token = @token";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("token", token);
             c.Prepare();
             var reader = command.ExecuteReader();
@@ -149,7 +149,7 @@ namespace MonsterTradingCardGame.DAL
             IDbConnection connection = DataBaseConnectionService.connectToDataBase();
             IDbCommand command = connection.CreateCommand();
             command.CommandText = @"DELETE FROM PACKAGES WHERE ID = @id";
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("id", id);
             c.Prepare();
             command.ExecuteNonQuery();

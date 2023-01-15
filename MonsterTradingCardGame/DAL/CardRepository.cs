@@ -20,7 +20,7 @@ namespace MonsterTradingCardGame.DAL
 
             command.CommandText = "SELECT id, name, type, element, damage FROM CARD WHERE owner = @owner";
 
-            NpgsqlCommand c = command as NpgsqlCommand;
+            NpgsqlCommand c = (command as NpgsqlCommand)!;
             c.Parameters.AddWithValue("owner", username);
             c.Prepare();
             var reader = command.ExecuteReader();

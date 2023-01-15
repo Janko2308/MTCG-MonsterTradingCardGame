@@ -29,7 +29,7 @@ namespace MonsterTradingCardGame.DAL
 
                 command.CommandText = @"INSERT INTO CARD(id, name, type, element, damage, deck) values (@id, @name, @type, @element, @damage, @deck)";
 
-                NpgsqlCommand c = command as NpgsqlCommand;
+                NpgsqlCommand c = (command as NpgsqlCommand)!;
                 c.Parameters.AddWithValue("id", id);
                 c.Parameters.AddWithValue("name", name);
                 c.Parameters.AddWithValue("type", type);
@@ -48,7 +48,7 @@ namespace MonsterTradingCardGame.DAL
 
             command2.CommandText = @"INSERT INTO PACKAGES(cardid1, cardid2, cardid3, cardid4, cardid5) values (@cardid1, @cardid2, @cardid3, @cardid4, @cardid5)";
 
-            NpgsqlCommand c2 = command2 as NpgsqlCommand;
+            NpgsqlCommand c2 = (command2 as NpgsqlCommand)!;
             c2.Parameters.AddWithValue("cardid1", cardid1);
             c2.Parameters.AddWithValue("cardid2", cardid2);
             c2.Parameters.AddWithValue("cardid3", cardid3);
@@ -69,7 +69,7 @@ namespace MonsterTradingCardGame.DAL
                 string id = card.ID;
                 IDbCommand command = connection.CreateCommand();
                 command.CommandText = @"SELECT FROM CARD ID WHERE ID = @id";
-                NpgsqlCommand c = command as NpgsqlCommand;
+                NpgsqlCommand c = (command as NpgsqlCommand)!;
                 c.Parameters.AddWithValue("id", id);
                 c.Prepare();
                 var reader = command.ExecuteReader();
@@ -79,7 +79,6 @@ namespace MonsterTradingCardGame.DAL
                 }
                 reader.Close();
             }
-            //wenn es die karten noch nicht gibt
             DataBaseConnectionService.closeConnectionToDataBase(connection);
             return found;
         }

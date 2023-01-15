@@ -49,13 +49,21 @@ namespace MonsterTradingCardGame.Http.Controller
                 ResponseUtils.SetResponseData(response, 200, "The deck has been successfully configured","");
 
             }
-            catch (NotRequiredAmountOfCards)
+            catch (NotRequiredAmountOfCardsException)
             {
                 ResponseUtils.SetResponseData(response, 400, "The provided deck did not include the required amount of cards", "");
             }
             catch (NoItemAvaiableException)
             {
                 ResponseUtils.SetResponseData(response, 403, "At least one of the provided cards does not belong to the user or is not avaiable", "");
+            }
+            catch (AuthenticateTokenException)
+            {                      
+                ResponseUtils.SetResponseData(response, 401, "Access token is missing or invalid", "");               
+            }
+            catch (NullReferenceException)
+            {               
+                ResponseUtils.SetResponseData(response, 400, "The request was malformed", "");               
             }
         }
     }

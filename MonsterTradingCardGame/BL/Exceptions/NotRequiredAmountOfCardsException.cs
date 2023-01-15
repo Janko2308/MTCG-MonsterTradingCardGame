@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.BL.Exceptions
 {
-    public class ConflictException : Exception
+    internal class NotRequiredAmountOfCardsException : Exception
     {
-        public ConflictException(string message) : base(message)
+        public NotRequiredAmountOfCardsException(string message) : base(message)
         {
         }
     }
+    
 }

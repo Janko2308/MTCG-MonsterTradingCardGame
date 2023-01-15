@@ -24,15 +24,15 @@ namespace MonsterTradingCardGame.Http.Controller
                     BuyPackage(request);
                     ResponseUtils.SetResponseData(response, 200, "A package has been successfully bought", "");
                 }
-                catch(AuthenticateTokenException e)
+                catch(AuthenticateTokenException)
                 {
                     ResponseUtils.SetResponseData(response, 401, "Access token is missing or invalid", "");
                 }
-                catch (NoItemAvaiableException e)
+                catch (NoItemAvaiableException)
                 {
                     ResponseUtils.SetResponseData(response, 404, "No card package avaiable", "");
                 }
-                catch (NotEnoughMoneyException e)
+                catch (NotEnoughMoneyException)
                 {
                     ResponseUtils.SetResponseData(response, 403, "Not enough money for buying a card package", "");
                 }

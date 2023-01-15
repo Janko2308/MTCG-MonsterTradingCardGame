@@ -26,9 +26,11 @@ namespace MonsterTradingCardGame.Http
 
         public void Parse()
         {
-            // first line contains HTTP METHOD PATH and PROTOCOL
             string? line = reader.ReadLine();
-            Console.WriteLine(line);
+            if (line == null)
+            {
+                throw new Exception("Empty request");
+            }
             var firstLineParts = line.Split(" ");
             Method = firstLineParts[0];
             Path = firstLineParts[1];

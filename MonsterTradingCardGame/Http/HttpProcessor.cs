@@ -29,15 +29,24 @@ namespace MonsterTradingCardGame.Http
             controllerMap.TryAdd("/stats", new StatsController());
             controllerMap.TryAdd("/score", new ScoreController());
             controllerMap.TryAdd("/battles", new BattleController());
-            //TODO mehr Endpunkte
+            controllerMap.TryAdd("/users/delete", new UserController());
+            controllerMap.TryAdd("/sessions/logout", new SessionController());
         }
 
         public void run()
         {
             var reader = new StreamReader(clientSocket.GetStream());
             var request = new HttpRequest(reader);
-            request.Parse();
             var response = new HttpResponse(new StreamWriter(clientSocket.GetStream()));
+            try
+            {
+                request.Parse();               
+            }
+            catch (Exception e)
+            {
+                ResponseUtils.SetResponseData(response, 400, "Bad Request", e.Message);
+                return;
+            }
             string name = request.Path.Split("/").Last();
             var tempController = new SessionController();
             try
@@ -53,24 +62,25 @@ namespace MonsterTradingCardGame.Http
                     var controller = controllerMap[request.Path];
                     try
                     {
+                        Console.WriteLine(request.Content);
                         controller.Run(request, response);
                     }
-                    catch(JsonException e)
+                    catch(JsonException)
                     {
                         ResponseUtils.SetResponseData(response, 400, "Bad Request", "");
                     }
-                    catch(NoSuchMethodException e)
+                    catch(NoSuchMethodException)
                     {
                         ResponseUtils.SetResponseData(response, 400, "Bad Request no such request", "");
                     }
                     
                 }
             }
-            catch (AuthenticateTokenException e)
+            catch (AuthenticateTokenException)
             {
                 ResponseUtils.SetResponseData(response, 401, "Access token is missing or invalid", "");
             }
-            catch (NoSuchMethodException e)
+            catch (NoSuchMethodException)
             {
                 ResponseUtils.SetResponseData(response, 400, "Bad Request no such request", "");
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardGame.Http
 {
-    internal class HttpResponse
+    public class HttpResponse
     {
         private StreamWriter writer;
         public int ResponseCode { get; set; }

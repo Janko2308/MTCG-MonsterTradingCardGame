@@ -25,11 +25,11 @@ namespace MonsterTradingCardGame.Http.Controller
                     cardsLogic.GetCards(request, response);
                     
                 }
-                catch (NoItemAvaiableException e)
+                catch (NoItemAvaiableException)
                 {
                     ResponseUtils.SetResponseData(response, 204, "The request was fine, but the user doesn´t have any cards", "");
                 }
-                catch (AuthenticateTokenException e)
+                catch (AuthenticateTokenException)
                 {
                     ResponseUtils.SetResponseData(response, 401, "Access token is missing or invalid", "");
                 }

@@ -20,16 +20,24 @@ namespace MonsterTradingCardGame.Http.Controller
                     packageLogic.AddPackage(request, response);
                     ResponseUtils.SetResponseData(response, 201, "Package was successfully created", "");
                 }
-                catch(NotEnoughRightsException e)
+                catch(NotEnoughRightsException)
                 {
                     ResponseUtils.SetResponseData(response, 403, "Provided user is not admin", "");
                 }
-                catch (NotUniqueCardException e)
+                catch (NotUniqueCardException)
                 {
                     ResponseUtils.SetResponseData(response, 409, "At least one card in the packages already exists", "");
                 }
-                
-                
+                catch (NotRequiredAmountOfCardsException)
+                {
+                    ResponseUtils.SetResponseData(response, 400, "Not enough cards in the package", "");
+                }
+                catch (NullReferenceException)
+                {
+                    ResponseUtils.SetResponseData(response, 400, "No cards in the package", "");
+                }
+
+
             }
             else 
             {

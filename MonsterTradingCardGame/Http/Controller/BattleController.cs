@@ -27,6 +27,10 @@ namespace MonsterTradingCardGame.Http.Controller
                 {
                     ResponseUtils.SetResponseData(response, 400, "User already in battle", "");
                 }
+                catch (InvalidDeckException)
+                {
+                    ResponseUtils.SetResponseData(response, 400, "Invalid Deck", "");
+                }
                 
             }
             else

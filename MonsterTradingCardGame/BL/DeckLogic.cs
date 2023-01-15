@@ -55,7 +55,23 @@ namespace MonsterTradingCardGame.BL
 
         public void ConfigureDeck(HttpRequest request, HttpResponse response)
         {
+            if (request.Content == null || request.headers["Authorization"] == null)
+            {
+                throw new NullReferenceException("The request content or the Authorization header is null");
+            }
+            if (!request.headers.ContainsKey("Authorization"))
+            {
+                throw new NullReferenceException("The Authorization header is missing");
+            }
+            if (request == null)
+            {
+                throw new NullReferenceException("Request is null");
+            }
             var authHeader = request.headers["Authorization"].ToString();
+            if (authHeader == null)
+            {
+                throw new AuthenticateTokenException("Access token is missing or invalid");
+            }
             authHeader = authHeader.Split(" ")[1];
             authHeader = authHeader.ToLower();
             string userName = userLogic.GetUserNameFromToken(authHeader);
@@ -63,14 +79,21 @@ namespace MonsterTradingCardGame.BL
             {
                 throw new AuthenticateTokenException("Access token is missing or invalid");
             }
-            List<string> cardIds = JsonSerializer.Deserialize<List<string>>(request.Content);
-            if (cardIds.Count != 4)
+            List<string> cardIds = JsonSerializer.Deserialize<List<string>>(request.Content)!;
+            if (cardIds == null || cardIds.Count != 4)
             {
-                throw new NotRequiredAmountOfCards("Not 4 cards for the deck");
+                throw new NotRequiredAmountOfCardsException("Not 4 cards for the deck");
             }
             deckRepository.ConfigureDeck(userName, cardIds);
             ResponseUtils.SetResponseData(response, 200, "The Deck has cards, the response contains these ", "");
 
+        }
+        
+        public bool CheckIfDeckExists(string username)
+        {
+            
+            return deckRepository.CheckIfDeckExists(username);
+            
         }
 
     }
